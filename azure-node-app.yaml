@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-node-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-node-app
+  template:
+    metadata:
+      labels:
+        app: azure-node-app
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: azure-node-app
+        image: chauhansumit/timus:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REDIS
+          value: "azure-vote-back"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-node-app
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000 
+  selector:
+    app: azure-node-app
