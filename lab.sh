@@ -2,7 +2,7 @@
 az provider register --namespace Microsoft.OperationsManagement
 az provider register --namespace Microsoft.OperationalInsights
 
-rg=aks-rg1
+rg=aks-rg2
 loc=eastus
 az group create --name $rg --location $loc
 az network vnet create \
@@ -45,7 +45,7 @@ az aks create \
     --enable-managed-identity \
     --assign-identity $identityId \
     --node-vm-size  Standard_F8s_v2 \
-    --node-count 2
+    --node-count 1 &
 
 az aks nodepool list \
     --cluster-name AKSCluster \
@@ -67,7 +67,8 @@ az aks scale \
 
 az aks get-credentials --resource-group $rg --name AKSCluster
 az aks install-cli
-az aks get-credentials --resource-group $rg  --name AKSCluster
+az aks get-credentials --resource-group $rg  --name aks101
+alias kubectl=/c/Users/devsyc/.kube/kubectl.exe
 kubectl apply -f azure-vote.yaml
 kubectl get service azure-vote-front --watch
 
